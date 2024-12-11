@@ -1,6 +1,8 @@
 # cp-code-runner
 
-`cp-code-runner` is a Node.js module that enables the execution of code in different programming languages, such as Python and C++. It supports the execution of source code with custom inputs and a timeout mechanism for enhanced control.
+`cp-code-runner` is a Node.js module that enables the execution of code in different programming languages(for now only Python and C++, extra languages will be added in the upcoming updates). It supports the execution of source code with custom inputs and a timeout mechanism for enhanced control.
+
+this is a part of a bigger project that I am building. It is an api-based code-runner which has the same parameters as this package. github link: https://github.com/ShriramJayanth/KazeCode
 
 ## Installation
 
