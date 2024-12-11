@@ -9,6 +9,8 @@ To install the package, use:
 ```bash
 npm install cp-code-runner
 ```
+## Pre-requisites
+- Since it runs on your local machine make sure to have the necessary compilers before-hand and the environment variables too.
 
 ## Features
 
