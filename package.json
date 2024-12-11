@@ -1,18 +1,21 @@
 {
   "name": "cp-code-runner",
-  "version": "1.0.0",
-  "description": "an npm package that helps you to run code on your machine via child-process, very helpful if you are planning to conduct a coding event",
+  "version": "1.0.2",
+  "description": "An npm package that helps you run code on your machine via child-process. Very helpful for conducting coding events.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ShriramJayanth/cp-code-runner.git"
+    "url": "https://github.com/ShriramJayanth/cp-code-runner.git"
   },
   "keywords": [
     "NPM",
-    "Package"
+    "Package",
+    "Code Runner",
+    "Child Process",
+    "Coding Events"
   ],
   "author": "Shriram Jayanth",
   "license": "ISC",
@@ -22,5 +25,10 @@
   "homepage": "https://github.com/ShriramJayanth/cp-code-runner#readme",
   "dependencies": {
     "express": "^4.21.2"
-  }
+  },
+  "files": [
+    "index.js",
+    "package.json",
+    "README.md"
+  ]
 }
