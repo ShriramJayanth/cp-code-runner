@@ -1,6 +1,6 @@
 {
   "name": "cp-code-runner",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "An npm package that helps you run code on your machine via child-process. Very helpful for conducting coding events.",
   "main": "index.js",
   "scripts": {

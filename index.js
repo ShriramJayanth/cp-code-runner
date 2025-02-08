@@ -2,15 +2,39 @@ const { spawn, execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
-/**
- * Executes source code in a specific language with provided stdin and timeout.
- * @param {number} languageID - The language ID (1 for Python, 2 for C++)
- * @param {string} sourceCode - The source code to execute
- * @param {string} stdin - The standard input for the program
- * @param {number} timeout - Timeout in milliseconds
- * @returns {Promise<{ stdout: string, stderr: string, status: 'completed' | 'queued' | 'failed' | 'timeout' }>}
- */
 const execCode = async (languageID, sourceCode, stdin, timeout) => {
+    const forbiddenPatterns = [
+        /require\(.+\)/g,         
+        /process\./g,             
+        /child_process/g,         
+        /exec\(.+\)/g,            
+        /while\s*\(true\)/g,      
+        /for\s*\(\s*;\s*;\s*\)/g, 
+        /__import__\(['"].+['"]\)/g, 
+        /\bimport\s+(os|sys|subprocess|shlex|pickle|socket|threading|multiprocessing|pty|resource|pwd|grp)\b/g,
+        /\bfrom\s+(os|sys|subprocess|shlex|pickle|socket|threading|multiprocessing|pty|resource|pwd|grp)\s+import\b/g
+    ];
+    
+
+    for (const pattern of forbiddenPatterns) {
+        if (pattern.test(sourceCode)) {
+            return { stdout: '', stderr: 'Error: The submitted code contains forbidden constructs and cannot be executed.', status: 'failed' };
+        }
+    }
+
+    const restrictedModules = ["fs", "os", "net", "child_process"];
+    for (const module of restrictedModules) {
+        const importPattern = new RegExp(`(import|require)\\s*\\(['"]${module}['"]\\)`, 'g');
+        if (importPattern.test(sourceCode)) {
+            return { stdout: '', stderr: `Error: Usage of restricted module '${module}' is not allowed.`, status: 'failed' };
+        }
+    }
+
+    const maxCodeLength = 10000;
+    if (sourceCode.length > maxCodeLength) {
+        return { stdout: '', stderr: 'Error: The submitted code exceeds the maximum allowed length.', status: 'failed' };
+    }
+
     let tempFilePathCode = "";
     let objectCodePath = "";
 
@@ -19,6 +43,9 @@ const execCode = async (languageID, sourceCode, stdin, timeout) => {
     } else if (languageID === 2) {
         tempFilePathCode = path.join(__dirname, 'Program.cpp');
         objectCodePath = path.join(__dirname, 'Program');
+    } else if (languageID === 3) {
+        tempFilePathCode = path.join(__dirname, 'Program.java');
+        objectCodePath = path.join(__dirname, 'Program.class');
     }
 
     let result = {
@@ -37,6 +64,9 @@ const execCode = async (languageID, sourceCode, stdin, timeout) => {
         } else if (languageID === 2) {
             execSync(`g++ -o ${objectCodePath} ${tempFilePathCode}`);
             process = spawn(objectCodePath, [], { stdio: ['pipe', 'pipe', 'pipe'] });
+        } else if (languageID === 3) {
+            execSync(`javac ${tempFilePathCode}`);
+            process = spawn("java", ["Program"], { stdio: ["pipe", "pipe", "pipe"] });
         }
 
         if (process) {
@@ -99,32 +129,3 @@ const execCode = async (languageID, sourceCode, stdin, timeout) => {
 };
 
 module.exports = { execCode };
-
-
-// const pythonCode = `
-// for i in range(1000000):
-//     for j in range(100000000):
-//         print(i)
-// `;
-
-// const cppCode = `
-// #include <bits/stdc++.h>
-// using namespace std;
-
-// int main() {
-//     string message;
-//     getline(cin,message);
-//     cout<<message<<endl;
-//     return 0;
-// }
-// `;
-
-// const stdin = 'Kaizoku ou ni naru no otoka da"';
-
-// execCode(1, pythonCode, stdin,5000).then((result) => {
-//     console.log('Python result:', result);
-// });
-
-// execCode(2, cppCode, stdin,5000).then((result) => {
-//     console.log('C++ result:', result);
-// });

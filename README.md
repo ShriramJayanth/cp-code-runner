@@ -1,6 +1,6 @@
 # cp-code-runner
 
-`cp-code-runner` is a Node.js module that enables the execution of code in different programming languages(for now only Python and C++, extra languages will be added in the upcoming updates). It supports the execution of source code with custom inputs and a timeout mechanism for enhanced control.
+`cp-code-runner` is a Node.js module that enables the execution of code in different programming languages(for now only Python, Java and C++, extra languages will be added in the upcoming updates). It supports the execution of source code with custom inputs and a timeout mechanism for enhanced control.
 
 this is a part of a bigger project that I am building. It is an api-based code-runner which has the same parameters as this package. github link: https://github.com/ShriramJayanth/KazeCode
 
@@ -16,7 +16,7 @@ npm install cp-code-runner
 
 ## Features
 
-- Execute Python and C++ code dynamically.
+- Execute Python, Java and C++ code dynamically.
 - Pass custom standard input (stdin) to the program.
 - Handle execution timeouts to prevent infinite loops.
 - Provides detailed results, including stdout, stderr, and execution status.
@@ -33,7 +33,7 @@ const { execCode } = require('cp-code-runner');
 
 ```typescript
 execCode(
-  languageID: number,          // 1 for Python, 2 for C++
+  languageID: number,          // 1 for Python, 2 for C++, 3 for java
   sourceCode: string,          // Source code to execute
   stdin: string,               // Standard input for the program
   timeout: number              // Timeout in milliseconds
@@ -79,6 +79,29 @@ const { execCode } = require('cp-code-runner');
 })();
 ```
 
+### Example: Running Java Code
+
+```javascript
+const { execCode } = require('cp-code-runner');
+
+(async () => {
+  const javaCode = `
+  import java.util.Scanner;
+
+  public class Program {
+      public static void main(String[] args) {
+          Scanner sc = new Scanner(System.in);
+          String message = sc.nextLine();
+          System.out.println("You entered: " + message);
+      }
+  }
+  `;
+
+  const result = await execCode(3, javaCode, 'Hello, Java!', 5000);
+  console.log(result);
+})();
+```
+
 ## Result Object
 
 The `execCode` function returns a Promise that resolves with an object containing the following fields:
@@ -103,7 +126,7 @@ The `execCode` function returns a Promise that resolves with an object containin
 
 ## Error Handling
 
-If an error occurs during execution (e.g., compilation error for C++ or syntax error for Python), the `stderr` field will contain the error details, and the `status` will be set to `failed`.
+If an error occurs during execution (e.g., compilation error for C++, Java or syntax error for Python), the `stderr` field will contain the error details, and the `status` will be set to `failed`.
 
 ### Example Error Result
 
